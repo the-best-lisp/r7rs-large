@@ -459,14 +459,14 @@
 
           (let lp1 ((ilist-a (car ilists)) (others (cdr ilists)))
             (or (null? others)
-                (let ((ilist-b (car others))
+                (let ((ilist-b-orig (car others))
                       (others (cdr others)))
-                  (if (eq? ilist-a ilist-b)	; EQ? => LIST=
-                    (lp1 ilist-b others)
-                    (let lp2 ((ilist-a ilist-a) (ilist-b ilist-b))
+                  (if (eq? ilist-a ilist-b-orig)	; EQ? => LIST=
+                    (lp1 ilist-b-orig others)
+                    (let lp2 ((ilist-a ilist-a) (ilist-b ilist-b-orig))
                       (if (null-ilist? ilist-a)
                         (and (null-ilist? ilist-b)
-                             (lp1 ilist-b others))
+                             (lp1 ilist-b-orig others))
                         (and (not (null-ilist? ilist-b))
                              (= (icar ilist-a) (icar ilist-b))
                              (lp2 (icdr ilist-a) (icdr ilist-b)))))))))))
