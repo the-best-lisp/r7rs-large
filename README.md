@@ -27,7 +27,7 @@ Tested against:
 5. `(scheme charset)` from SRFI 14 - TODO
 6. `(scheme hash-table)` from SRFI 125 - TODO, relies on rnrs/srfi-60 htables
 7. `(scheme ilist)` from SRFI 116
-8. `(scheme rlist)` from SRFI 101 (note exceptions in Red Edition) - TODO (rnrs)
+8. `(scheme rlist)` from SRFI 101
 9. `(scheme ideque)` from SRFI 134
 10. `(scheme text)` from SRFI 135 - TODO (rnrs)
 11. `(scheme generator)` from SRFI 121
@@ -45,8 +45,6 @@ unsuitable for implementing coroutines.
 
 `(scheme ephemeron)` requires implementation-specific code.  The trivial 
 implementation is provided here, to write code against.
-
-`(scheme ilist)` tests fail on Gauche, Kawa and Larceny - (maybe due to equal? implementation)
 
 The usual SRFI license applies: http://srfi.schemers.org/
 

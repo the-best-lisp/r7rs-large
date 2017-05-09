@@ -25,8 +25,32 @@
   (export replace-icar replace-icdr)
   (export pair->ipair ipair->pair list->ilist ilist->list)
   (export tree->itree itree->tree gtree->itree gtree->tree)
-  (export iapply)
+  (export iapply iequal?)
   (import (scheme base))
+
+  (cond-expand
+    ((or gauche kawa larceny)
+     (import (only (scheme list) every))
+     (begin
+       (define (iequal? a b) 
+         (cond ((and (ilist? a)
+                     (ilist? b)) 
+                (ilist= iequal? a b))
+               ((and (ipair? a)
+                     (ipair? b))
+                (and (iequal? (icar a) (icar b))
+                     (iequal? (icdr a) (icdr b))))
+               ((and (vector? a)
+                     (vector? b))
+                (iequal? (vector->list a) (vector->list b)))
+               ((and (list? a)
+                     (list? b))
+                (every iequal? a b))
+               (else
+                 (equal? a b))))))
+    (else ; (or chibi sagittarius)
+     (begin
+       (define iequal? equal?))))
 
   (begin
     ;;;; Enhancements and hooks in Olin's SRFI-1 code to make it work for ilists
@@ -1010,12 +1034,12 @@
     ;;; ialist-delete key alist [=]	Alist-idelete by key comparison
 
     (define (idelete x lis . maybe-=) 
-      (let ((= (:optional maybe-= equal?)))
+      (let ((= (:optional maybe-= iequal?)))
         (ifilter (lambda (y) (not (= x y))) lis)))
 
     ;;; Extended from R4RS to take an optional comparison argument.
     (define (imember x lis . maybe-=)
-      (let ((= (:optional maybe-= equal?)))
+      (let ((= (:optional maybe-= iequal?)))
         (ifind-tail (lambda (y) (= x y)) lis)))
 
     ;;; The IMEMBER and then IFIND-TAIL call should definitely
@@ -1034,7 +1058,7 @@
     ;;; element-marking. The former gives you O(n lg n), the latter is linear.
 
     (define (idelete-duplicates lis . maybe-=)
-      (let ((elt= (:optional maybe-= equal?)))
+      (let ((elt= (:optional maybe-= iequal?)))
         (check-arg procedure? elt= idelete-duplicates)
         (let recur ((lis lis))
           (if (null-ilist? lis) lis
@@ -1048,13 +1072,13 @@
 
     ;;; Extended from R4RS to itake an optional comparison argument.
     (define (iassoc x lis . maybe-=)
-      (let ((= (:optional maybe-= equal?)))
+      (let ((= (:optional maybe-= iequal?)))
         (ifind (lambda (entry) (= x (icar entry))) lis)))
 
     (define (ialist-cons key datum alist) (ipair (ipair key datum) alist))
 
     (define (ialist-delete key alist . maybe-=)
-      (let ((= (:optional maybe-= equal?)))
+      (let ((= (:optional maybe-= iequal?)))
         (ifilter (lambda (elt) (not (= key (icar elt)))) alist)))
 
 
