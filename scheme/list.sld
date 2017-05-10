@@ -51,7 +51,7 @@
           (scheme cxr))
 
   (cond-expand
-    (kawa
+    (kawa ; special Kawa version
       (import (except (srfi 1) list=))
       (begin
 
@@ -77,7 +77,8 @@
               (let ((tail (cdr lis)))
                 (set-cdr! lis ans)
                 (lp tail lis)))))))
-    ((library (srfi 1))
+    
+    ((library (srfi 1)) ; use SRFI 1 if available
      (import (srfi 1)))
 
     (else ; no SRFI 1 found, so use definitions below

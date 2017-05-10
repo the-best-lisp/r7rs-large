@@ -15,31 +15,26 @@
           vector-select!             vector-separate!
           )
 
-  (cond-expand
-    ((library (srfi 132)) ; use built-in SRFI 132 if available
-     (import (srfi 132)))
+  (import (scheme base) 
+          (scheme cxr)
+          (only (srfi 27) random-integer))
 
-    (else ;; use reference implementation for SRFI 132
-      (import (scheme base) 
-              (scheme cxr)
-              (only (srfi 27) random-integer))
+  (begin
 
-      (begin
+    (define (assert x)
+      (when (not x)
+        (error "assertion failure"))))
 
-        (define (assert x)
-          (when (not x)
-            (error "assertion failure"))))
+  (include "sort/delndups.scm")     ; list-delete-neighbor-dups etc
+  (include "sort/lmsort.scm")       ; list-merge, list-merge!
+  (include "sort/sortp.scm")        ; list-sorted?, vector-sorted?
+  (include "sort/vector-util.scm")
+  (include "sort/vhsort.scm")
+  (include "sort/vmsort.scm")       ; vector-merge, vector-merge!
+  (include "sort/vqsort2.scm")
+  (include "sort/sort.scm")
 
-      (include "sort/delndups.scm")     ; list-delete-neighbor-dups etc
-      (include "sort/lmsort.scm")       ; list-merge, list-merge!
-      (include "sort/sortp.scm")        ; list-sorted?, vector-sorted?
-      (include "sort/vector-util.scm")
-      (include "sort/vhsort.scm")
-      (include "sort/vmsort.scm")       ; vector-merge, vector-merge!
-      (include "sort/vqsort2.scm")
-      (include "sort/sort.scm")
+  (include "sort/select.scm")
 
-      (include "sort/select.scm")
-
-      )))
+  )
 

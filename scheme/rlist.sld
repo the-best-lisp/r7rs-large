@@ -80,6 +80,8 @@
           (srfi 69)
           (only (srfi 151) arithmetic-shift))
 
+  ;; TODO: for Kawa, check gnu/kawa/slib/ralists.scm
+
   (begin
 
     (define-record-type <kons>

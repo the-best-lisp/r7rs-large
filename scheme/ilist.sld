@@ -29,6 +29,13 @@
   (import (scheme base))
 
   (cond-expand
+;    (gauche
+;      (import (gauche base))
+;      (begin
+;        (define-method object-equal? ((a <ilist>) (b <ilist>))
+;                       (and (equal? (icar a) (icar b))
+;                            (equal? (icdr a) (icdr b))))
+;        (define iequal? equal?)))
     ((or gauche kawa larceny)
      (import (only (scheme list) every))
      (begin
@@ -51,6 +58,22 @@
     (else ; (or chibi sagittarius)
      (begin
        (define iequal? equal?))))
+
+  ;; TODO: cond-expand to use Kawa's ImmutablePair in place of <ilist> record
+  #;(cond-expand
+    (kawa
+      (import (kawa base)
+              (prefix (gnu lists Pair) p:))
+      (begin
+        (define-alias <ilist> gnu.lists.ImmutablePair)
+        (define (ipair x y) (gnu.lists.ImmutablePair x y))
+        (define (ipair? x) (gnu.lists.ImmutablePair? x))
+        (define (icar p::gnu.lists.ImmutablePair) (p:getCar))
+        (define (icdr p::gnu.lists.ImmutablePair) (p:getCdr))))
+    (else 
+      (begin
+        (define-record-type <ilist> (ipair icar icdr) ipair? (icar icar) (icdr icdr)))))
+
 
   (begin
     ;;;; Enhancements and hooks in Olin's SRFI-1 code to make it work for ilists
