@@ -966,11 +966,6 @@
 
     ;;; Set theory operations
 
-    ;; A trivial helper function which upper-bounds n by one if multi? is false.
-
-    (define (max-one n multi?)
-      (if multi? n (if (> n 1) 1 n)))
-
     ;; The logic of union, intersection, difference, and sum is the same: the
     ;; sob-* and sob-*! procedures do the reduction to the dyadic-sob-*!
     ;; procedures.  The difference is that the sob-* procedures allocate

@@ -29,10 +29,10 @@ Tested against:
 7. `(scheme ilist)` from SRFI 116
 8. `(scheme rlist)` from SRFI 101 
 9. `(scheme ideque)` from SRFI 134
-10. `(scheme text)` from SRFI 135 - TODO (rnrs)
+10. `(scheme text)` from SRFI 135
 11. `(scheme generator)` from SRFI 121
 12. `(scheme lseq)` from SRFI 127
-13. `(scheme stream)` from SRFI 41 - TODO
+13. `(scheme stream)` from SRFI 41
 14. `(scheme box)` from SRFI 111
 15. `(scheme list-queue)` from SRFI 117
 16. `(scheme ephemeron)` from SRFI 124
@@ -42,8 +42,13 @@ Tested against:
 
 TODO: change (srfi 69) to (scheme hash-table) in: set, rlist 
 
+`(scheme text)` Chibi and Gauche having problems with string-titlecase
+
 `(scheme generator)` does not work on Kawa due to its continuations being 
 unsuitable for implementing coroutines.
+
+`(scheme stream)` implementation requires (rnrs syntax-case) to define stream-match, 
+and so does not work on Chibi, Gauche or Kawa.
 
 `(scheme ephemeron)` requires implementation-specific code.  The trivial 
 implementation is provided here, to write code against.
