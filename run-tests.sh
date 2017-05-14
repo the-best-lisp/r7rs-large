@@ -1,4 +1,5 @@
 # Run tests: chibi/gauche/kawa/larceny/sagittarius argument selects implementation
+# Note for SRFI 64 etc requires some of libraries in r7rs-libs
 
 if [ "$1" = "kawa" ]; then
   PROG="kawa --r7rs -Dkawa.import.path=$(cd "$(dirname "$0")" ; pwd)/*.sld -f "

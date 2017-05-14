@@ -42,13 +42,8 @@ Tested against:
 
 TODO: change (srfi 69) to (scheme hash-table) in: set, rlist 
 
-`(scheme text)` Chibi and Gauche having problems with string-titlecase
-
 `(scheme generator)` does not work on Kawa due to its continuations being 
 unsuitable for implementing coroutines.
-
-`(scheme stream)` implementation requires (rnrs syntax-case) to define stream-match, 
-and so does not work on Chibi, Gauche or Kawa.
 
 `(scheme ephemeron)` requires implementation-specific code.  The trivial 
 implementation is provided here, to write code against.

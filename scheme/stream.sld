@@ -26,57 +26,6 @@
   (import (scheme base)
           (only (scheme list) any))
 
-  (cond-expand
-    ((library (rnrs syntax-case))
-     (import (rnrs syntax-case))
-     (begin 
-
-       (define-syntax stream-match
-         (syntax-rules ()
-                       ((stream-match strm-expr clause ...)
-                        (let ((strm strm-expr))
-                          (cond
-                            ((not (stream? strm)) (error 'stream-match "non-stream argument"))
-                            ((stream-match-test strm clause) => car) ...
-                            (else (error 'stream-match "pattern failure")))))))
-
-       (define-syntax stream-match-test
-         (syntax-rules ()
-                       ((stream-match-test strm (pattern fender expr))
-                        (stream-match-pattern strm pattern () (and fender (list expr))))
-                       ((stream-match-test strm (pattern expr))
-                        (stream-match-pattern strm pattern () (list expr)))))
-
-       (define-syntax stream-match-pattern
-         (lambda (x)
-           (define (wildcard? x)
-             (and (identifier? x)
-                  (free-identifier=? x (syntax _))))
-           (syntax-case x () 
-                        ((stream-match-pattern strm () (binding ...) body)
-                         (syntax (and (stream-null? strm) (let (binding ...) body))))
-                        ((stream-match-pattern strm (w? . rest) (binding ...) body)
-                         (wildcard? (syntax w?))
-                         (syntax (and (stream-pair? strm)
-                                      (let ((strm (stream-cdr strm)))
-                                        (stream-match-pattern strm rest (binding ...) body)))))
-                        ((stream-match-pattern strm (var . rest) (binding ...) body)
-                         (syntax (and (stream-pair? strm)
-                                      (let ((temp (stream-car strm)) (strm (stream-cdr strm))) 
-                                        (stream-match-pattern strm rest ((var temp) binding ...) body)))))
-                        ((stream-match-pattern strm w? (binding ...) body)
-                         (wildcard? (syntax w?))
-                         (syntax (let (binding ...) body)))
-                        ((stream-match-pattern strm var (binding ...) body) 
-                         (syntax (let ((var strm) binding ...) body))))))))
-    (else
-      (import (scheme write))
-      (begin
-        (define-syntax stream-match 
-          (syntax-rules ()
-                        ((stream-match strm-expr clause ...)
-                         (error "Stream-match not supported on your implementation\n")))))))
-
   (begin
 
     ;; primitive operations
@@ -335,6 +284,40 @@
     (syntax-rules ()
                   ((_ expr rest ...)
                    (stream-of-aux expr stream-null rest ...))))
+
+  (define-syntax stream-match
+    (syntax-rules ()
+                  ((stream-match strm-expr clause ...)
+                   (let ((strm strm-expr))
+                     (cond
+                       ((not (stream? strm)) (error 'stream-match "non-stream argument"))
+                       ((stream-match-test strm clause) => car) ...
+                       (else (error 'stream-match "pattern failure")))))))
+
+  (define-syntax stream-match-test
+    (syntax-rules ()
+                  ((stream-match-test strm (pattern fender expr))
+                   (stream-match-pattern strm pattern () (and fender (list expr))))
+                  ((stream-match-test strm (pattern expr))
+                   (stream-match-pattern strm pattern () (list expr)))))
+
+  ;; R7RS version by Taylan Ulrich Bayırlı/Kammer
+  (define-syntax stream-match-pattern
+    (syntax-rules (_)
+                  ((stream-match-pattern strm () (binding ...) body)
+                   (and (stream-null? strm) (let (binding ...) body)))
+                  ((stream-match-pattern strm (_ . rest) (binding ...) body)
+                   (and (stream-pair? strm)
+                        (let ((strm (stream-cdr strm)))
+                          (stream-match-pattern strm rest (binding ...) body))))
+                  ((stream-match-pattern strm (var . rest) (binding ...) body)
+                   (and (stream-pair? strm)
+                        (let ((temp (stream-car strm)) (strm (stream-cdr strm))) 
+                          (stream-match-pattern strm rest ((var temp) binding ...) body))))
+                  ((stream-match-pattern strm _ (binding ...) body)
+                   (let (binding ...) body))
+                  ((stream-match-pattern strm var (binding ...) body) 
+                   (let ((var strm) binding ...) body))))
 
   (define-syntax stream-of-aux
     (syntax-rules (in is)

@@ -113,6 +113,8 @@
           (scheme kernel8))
 
   (cond-expand
+    ((library (gauche unicode)) 
+     (import (only (gauche unicode) string-titlecase)))
     ((library (rnrs unicode))
      (import (only (rnrs unicode) string-titlecase)))
     ((library (srfi 129))
