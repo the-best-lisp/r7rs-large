@@ -77,7 +77,8 @@
   (import (scheme base)
           (scheme case-lambda)
           (only (scheme list) fold-right)
-          (srfi 69)
+          (scheme comparator)
+          (scheme hash-table)
           (only (srfi 151) arithmetic-shift))
 
   ;; TODO: for Kawa, check gnu/kawa/slib/ralists.scm
@@ -443,7 +444,7 @@
     ;; This code based on code written by Abdulaziz Ghuloum
     ;; http://ikarus-scheme.org/pipermail/ikarus-users/2009-September/000595.html
     (define get-cached
-      (let ((h (make-hash-table eq?)))
+      (let ((h (make-hash-table (make-default-comparator))))
         (lambda (x)
           (define (f x)
             (cond

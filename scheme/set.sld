@@ -4,7 +4,7 @@
   (import (scheme case-lambda))
   (import (scheme write))
   (import (scheme comparator))
-  (import (except (srfi 69) string-hash string-ci-hash))
+  (import (scheme hash-table))
 
   (export set set-unfold)
   (export set? set-contains? set-empty? set-disjoint?)
@@ -63,38 +63,6 @@
     ;;; are done by the set-* and bag-* procedures, which are externally
     ;;; exposed (but trivial and mostly uncommented below).
 
-
-    ;;; Shim to convert from SRFI 69 to the future "intermediate hash tables"
-    ;;; SRFI.  Unfortunately, hash-table-fold is incompatible between the two
-    ;;; and so is not usable.
-
-    ;; This will be just "make-hash-table" in future.
-
-    (define (make-hash-table/comparator comparator)
-      (make-hash-table (comparator-equality-predicate comparator)
-                       (modulizer (comparator-hash-function comparator))))
-
-    ;; These two procedures adjust for the mismatch between the hash functions
-    ;; of SRFI 114, which return a potentially unbounded non-negative integer,
-    ;; and the hash functions of SRFI 69, which expect to be able to pass
-    ;; a second argument which is an upper bound.
-
-    (define (modulizer hash-function)
-      (case-lambda
-        ((obj) (hash-function obj))
-        ((obj limit) (modulo (hash-function obj) limit))))
-
-    ;; Simple renaming.  Chicken's implementation of SRFI 69 provides
-    ;; hash-table-for-each as a non-standard extension, with the opposite
-    ;; order, so in the Chicken module we suppress importing it to muffle
-    ;; the conflict warning.
-
-    (define hash-table-contains? hash-table-exists?)
-
-    (define (hash-table-for-each proc hash-table)
-      (hash-table-walk hash-table proc))
-
-
     ;;; Record definition and core typing/checking procedures
 
     (define-record-type sob
@@ -148,7 +116,7 @@
     ;; Construct an arbitrary empty sob out of nothing.
 
     (define (make-sob comparator multi?)
-      (raw-make-sob (make-hash-table/comparator comparator) comparator multi?))
+      (raw-make-sob (make-hash-table comparator) comparator multi?))
 
     ;; Copy a sob, sharing the constructor.
 
