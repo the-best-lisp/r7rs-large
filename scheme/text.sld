@@ -128,11 +128,9 @@
 
   (cond-expand
     ((library (rnrs base))
-     (import (only (rnrs base) div mod)))
+     (import (only (rnrs base) mod)))
     (else
       (begin
-        (define (assertion-violation procname msg . irritants)
-          (apply error msg irritants))
 
         ;; Restricted to exact integers, which is all we need here.
 
@@ -158,16 +156,6 @@
                              (values (- q 1) (+ r y)))))))
                 (else
                   (error "div or mod: illegal arguments" x y))))
-
-        (define (div x y)
-          (cond ((and (exact-integer? x)
-                      (exact-integer? y)
-                      (>= x 0))
-                 (quotient x y))
-                (else
-                  (call-with-values
-                    (lambda () (div-and-mod x y))
-                    (lambda (q r) q)))))
 
         (define (mod x y)
           (cond ((and (exact-integer? x)

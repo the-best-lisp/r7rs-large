@@ -16,7 +16,7 @@
           generator-fold generator-for-each generator-find
           generator-count generator-any generator-every generator-unfold)
   (import (scheme base)
-          (scheme case-lambda)          (scheme write)
+          (scheme case-lambda)  
           (only (scheme list) any))
 
   (begin

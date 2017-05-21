@@ -29,7 +29,7 @@
         (scheme char)
         (scheme comparator)
         (scheme hash-table)
-        (scheme list)
+        (scheme list)   
         (scheme sort)
         (srfi 64))
 
@@ -248,6 +248,12 @@
                    (map (lambda (i) (hash-table-ref/default ht-fixnum i -1))
                         '(169 144 121 0 1 4 9 16 25 36 49 64 81)))
             '(-1 12 -1 -1 -1 2 -1 4 -1 -1 -1 8 -1))
+
+(let ((ht-eg (hash-table (make-comparator real? = < (lambda (x) (exact (abs (round x))))) 1 1 4 2 9 3 16 4 25 5 64 8)))
+  (test-equal 0 (hash-table-delete! ht-eg))
+  (test-equal 0 (hash-table-delete! ht-eg 2 7 2000))
+  (test-equal 3 (hash-table-delete! ht-eg 1 2 4 7 64 2000))
+  (test-assert (= 3 (length (hash-table-keys ht-eg)))))
 
 (test-equal (begin (hash-table-intern! ht-fixnum 169 (lambda () 13))
                    (hash-table-intern! ht-fixnum 121 (lambda () 11))

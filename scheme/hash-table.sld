@@ -71,8 +71,9 @@
   (import (scheme base)
           (scheme case-lambda)
           (scheme comparator)
+          (only (srfi 27) random-integer)
           (prefix (srfi 69) s69:) ; uses srfi 69 functions, with prefix s69:
-          )
+          (only (scheme list) every))
 
   (begin
 
@@ -120,16 +121,8 @@
     (define (hash-table-empty? ht)
       (zero? (s69:hash-table-size ht)))
 
-    ;; From reference implementation, but uses our own every and ht functions
+    ;; From reference implementation, but uses list/every and own ht functions
     (define (hash-table=? value-comparator ht1 ht2)
-      (define (every proc keys vals)
-        (cond ((or (null? keys)
-                   (null? vals))
-               #t)
-              ((not (proc (car keys) (car vals)))
-               #f)
-              (else (every proc (cdr keys) (cdr vals)))))
-      ;
       (let ((val=? (comparator-equality-predicate value-comparator))
             (n1 (hash-table-size ht1))
             (n2 (hash-table-size ht2)))
@@ -175,12 +168,13 @@
         (s69:hash-table-set! ht (car kvs) (cadr kvs))))
 
     (define (hash-table-delete! ht . keys)
-      (do ((rem keys (cdr rem))
-           (cnt 0 (if (hash-table-contains? ht (car rem))
-                    (+ 1 cnt)
-                    cnt)))
-        ((null? rem) cnt)
-        (s69:hash-table-delete! ht (car rem))))
+      (let ((cnt 0))
+        (for-each (lambda (k) 
+                    (when (hash-table-contains? ht k)
+                      (set! cnt (+ 1 cnt))
+                      (s69:hash-table-delete! ht k)))
+                  keys)
+        cnt))
 
     ;; From reference implementation
     (define (hash-table-intern! ht key failure)
@@ -201,12 +195,14 @@
     (define (hash-table-update!/default ht key function default)
       (hash-table-update! ht key function (lambda () default)))
 
-    ;; Returns an arbitrary value - don't want to assume randomness, so just take first entry in 'keys'
+    ;; Returns an arbitrary value - requires random-integer from srfi 27
     (define (hash-table-pop! ht)
-      (let* ((key (car (hash-table-keys ht)))
-             (val (hash-table-ref ht key)))
-        (hash-table-delete! ht key)
-        (values key val)))
+      (unless (zero? (hash-table-size ht)) ; ignore if empty
+        (let* ((keys (hash-table-keys ht))
+               (key (list-ref (hash-table-keys ht) (random-integer (length keys))))
+               (val (hash-table-ref ht key)))
+          (hash-table-delete! ht key)
+          (values key val))))
 
     (define (hash-table-clear! ht)
       (for-each (lambda (key)
@@ -243,6 +239,7 @@
 
     ;; **** Mapping and Folding ****
 
+    ;; From reference implementation
     (define (hash-table-map proc comparator ht)
       (let ((new-ht (make-hash-table comparator)))
         (hash-table-for-each
@@ -254,6 +251,7 @@
     (define (hash-table-for-each proc ht)
       (s69:hash-table-walk ht proc))
 
+    ;; From reference implementation
     (define (hash-table-map! proc ht)
       (hash-table-for-each
         (lambda (k v) (hash-table-set! ht k (proc k v)))
@@ -265,6 +263,7 @@
     (define (hash-table-fold proc seed ht)
       (s69:hash-table-fold ht proc seed))
 
+    ;; From reference implementation
     (define (hash-table-prune! proc ht)
       (hash-table-for-each
         (lambda (k v)
