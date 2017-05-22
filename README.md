@@ -16,6 +16,26 @@ against the following R7RS Scheme implementations:
 * Sagittarius 0.8.4: https://bitbucket.org/ktakashi/sagittarius-scheme/wiki/Home
   * Sagittarius already has built-in support for R7RS large
 
+## Libraries
+
+1. `(scheme list)` from SRFI 1
+2. `(scheme vector)` from SRFI 133
+3. `(scheme sort)` from SRFI 132
+4. `(scheme set)` from SRFI 113 
+5. `(scheme charset)` from SRFI 14 - TODO
+6. `(scheme hash-table)` from SRFI 125
+7. `(scheme ilist)` from SRFI 116
+8. `(scheme rlist)` from SRFI 101 
+9. `(scheme ideque)` from SRFI 134
+10. `(scheme text)` from SRFI 135
+11. `(scheme generator)` from SRFI 121
+12. `(scheme lseq)` from SRFI 127
+13. `(scheme stream)` from SRFI 41
+14. `(scheme box)` from SRFI 111
+15. `(scheme list-queue)` from SRFI 117
+16. `(scheme ephemeron)` from SRFI 124
+17. `(scheme comparator)` from SRFI 128
+
 ## Notes
 
 `(scheme hash-table)` is based solely on SRFI 69 as this is available and
