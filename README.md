@@ -38,18 +38,23 @@ against the following R7RS Scheme implementations:
 
 ## Notes
 
+`(scheme set)` follows the "post-finalization note no. 2" of 
+[SRFI 113](https://srfi.schemers.org/srfi-113/srfi-113.html)
+and makes the argument order of the `-map` and `-unfold` functions consistent 
+with those in `(scheme hash-table)`
+
 `(scheme hash-table)` is based solely on SRFI 69 as this is available and
 implemented efficiently in the Schemes I have targetted.  For a non-SRFI 69
 implementation the functions prefixed 's69:' will need replacing, perhaps by 
 a native implementation of hash tables.  All hash-tables are treated as mutable.
 
-`(scheme generator)` does not work on Kawa due to its continuations being 
-unsuitable for implementing coroutines.
+`(scheme generator)` does not work on Kawa as its continuations are not
+suitable for implementing coroutines.
 
 `(scheme ephemeron)` requires implementation-specific code.  The trivial 
 implementation is provided here, to write code against.
 
-The usual SRFI license applies: http://srfi.schemers.org/
+Unless otherwise indicated in the code, the usual SRFI license applies: http://srfi.schemers.org/
 
 ## Requirements
 
@@ -63,5 +68,5 @@ The following are required beyond R7RS-small and R7RS-large:
 For those Schemes which do not already support the above SRFIs,
 an implementation can be found at https://github.com/petercrlane/r7rs-libs
 
-To install the libraries, follow the instructions at: 
+To install/use the libraries, follow the instructions at: 
 https://github.com/petercrlane/r7rs-libs/blob/master/INSTALL.md

@@ -29,13 +29,6 @@
   (import (scheme base))
 
   (cond-expand
-;    (gauche
-;      (import (gauche base))
-;      (begin
-;        (define-method object-equal? ((a <ilist>) (b <ilist>))
-;                       (and (equal? (icar a) (icar b))
-;                            (equal? (icdr a) (icdr b))))
-;        (define iequal? equal?)))
     ((or gauche kawa larceny)
      (import (only (scheme list) every))
      (begin
@@ -55,25 +48,9 @@
                 (every iequal? a b))
                (else
                  (equal? a b))))))
-    (else ; (or chibi sagittarius)
+    (else ; (or chibi sagittarius ...)
      (begin
        (define iequal? equal?))))
-
-  ;; TODO: cond-expand to use Kawa's ImmutablePair in place of <ilist> record
-  #;(cond-expand
-    (kawa
-      (import (kawa base)
-              (prefix (gnu lists Pair) p:))
-      (begin
-        (define-alias <ilist> gnu.lists.ImmutablePair)
-        (define (ipair x y) (gnu.lists.ImmutablePair x y))
-        (define (ipair? x) (gnu.lists.ImmutablePair? x))
-        (define (icar p::gnu.lists.ImmutablePair) (p:getCar))
-        (define (icdr p::gnu.lists.ImmutablePair) (p:getCdr))))
-    (else 
-      (begin
-        (define-record-type <ilist> (ipair icar icdr) ipair? (icar icar) (icdr icdr)))))
-
 
   (begin
     ;;;; Enhancements and hooks in Olin's SRFI-1 code to make it work for ilists
@@ -96,6 +73,11 @@
       (syntax-rules ()
                     ((iq . tree) (gtree->itree 'tree))))
 
+    ;;; Simple check for values of arguments
+
+    (define (check-arg pred val caller)
+      (if (pred val) val (error "Bad argument" val pred caller)))
+    
     ;;; Replacers
 
     (define (replace-icar old new)
@@ -200,7 +182,7 @@
       (ifind (lambda (entry) (eqv? x (icar entry))) lis))
 
     (define (ifor-each proc lis1 . lists)
-      (check-arg procedure? proc ipair-for-each)
+      (check-arg procedure? proc ifor-each)
       (if (pair? lists)
 
         (let lp ((lists (cons lis1 lists)))
@@ -343,11 +325,11 @@
     ;;;   Uses of the R5RS multiple-value procedure VALUES and the m-v binding
     ;;;     RECEIVE macro (which isn't R5RS, but is a trivial macro).
     ;;;   Many calls to a parameter-checking procedure check-arg:
-
-    (define (check-arg pred val caller)
-      (let lp ((val val))
-        (if (pred val) val (error "Bad argument" val pred caller))))
-
+    ;;;
+    ;;;    (define (check-arg pred val caller)
+    ;;;      (let lp ((val val))
+    ;;;        (if (pred val) val (error "Bad argument" val pred caller))))
+    ;;;
     ;;;   A few uses of the LET-OPTIONAL and :OPTIONAL macros for parsing
     ;;;     optional arguments.
     ;;;

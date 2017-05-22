@@ -615,20 +615,20 @@
     ;; because each instance of an element in a bag will be treated identically
     ;; anyway; we insert them all at once with sob-increment!.
 
-    (define (sob-map comparator proc sob)
+    (define (sob-map proc comparator sob)
       (let ((result (make-sob comparator (sob-multi? sob))))
         (hash-table-for-each
           (lambda (key value) (sob-increment! result (proc key) value))
           (sob-hash-table sob))
         result))
 
-    (define (set-map comparator proc set)
+    (define (set-map proc comparator set)
       (check-set set)
-      (sob-map comparator proc set))
+      (sob-map proc comparator set))
 
-    (define (bag-map comparator proc bag)
+    (define (bag-map proc comparator bag)
       (check-bag bag)
-      (sob-map comparator proc bag))
+      (sob-map proc comparator bag))
 
     ;; The fundamental deconstructor.  Note that there are no left vs. right
     ;; folds because there is no order.  Each element in a bag is fed into
