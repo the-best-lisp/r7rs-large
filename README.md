@@ -22,7 +22,7 @@ against the following R7RS Scheme implementations:
 2. `(scheme vector)` from SRFI 133
 3. `(scheme sort)` from SRFI 132
 4. `(scheme set)` from SRFI 113 
-5. `(scheme charset)` from SRFI 14 - TODO
+5. `(scheme charset)` from SRFI 14
 6. `(scheme hash-table)` from SRFI 125
 7. `(scheme ilist)` from SRFI 116
 8. `(scheme rlist)` from SRFI 101 
@@ -64,4 +64,4 @@ For those Schemes which do not already support the above SRFIs,
 an implementation can be found at https://github.com/petercrlane/r7rs-libs
 
 To install the libraries, follow the instructions at: 
-https://github.com/petercrlane/r7rs-libs/INSTALL.md
+https://github.com/petercrlane/r7rs-libs/blob/master/INSTALL.md
