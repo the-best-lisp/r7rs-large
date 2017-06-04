@@ -52,7 +52,7 @@
     char-set:empty		char-set:full
     )
   (import (scheme base)
-          (scheme char)                         (scheme write)
+          (scheme char)   
           (only (srfi 151) bitwise-and))
 
   ;;; Imports
