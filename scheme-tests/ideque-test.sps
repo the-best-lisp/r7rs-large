@@ -70,7 +70,11 @@
               lis)))
 
 (check 'ideque-take ideque-take take 7)
+(test-equal '(1 2 3 4) (ideque->list (ideque-take (ideque 1 2 3 4) 4)))
+(test-equal '(1 2 3 4) (ideque->list (ideque-take-right (ideque 1 2 3 4) 4)))
 (check 'ideque-drop ideque-drop drop 6)
+(test-equal '() (ideque->list (ideque-drop (ideque 1 2 3 4) 4)))
+(test-equal '() (ideque->list (ideque-drop-right (ideque 1 2 3 4) 4)))
 (check 'ideque-split-at ideque-split-at split-at 8)
 ;; out-of-range conditions
 (test-error (ideque->list (ideque-take (ideque 1 2 3 4 5 6 7) 10)))
