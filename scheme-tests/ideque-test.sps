@@ -3,6 +3,7 @@
         (scheme ideque)
         (scheme generator)
         (scheme list)
+        (scheme write)
         (srfi 64))
 
 (define-syntax receive ; from SRFI-8 (c) John David Stone, 1999
@@ -58,6 +59,13 @@
 (test-assert (ideque-empty? (ideque-remove-back (ideque 1))))
 (test-equal 0 (ideque-front (ideque-add-front (ideque 1 2 3) 0)))
 (test-equal 0 (ideque-back (ideque-add-back (ideque 1 2 3) 0)))
+
+;; loss of front ideque
+(let ((id (ideque #f #f #f #f #f #f #f #f #f #f #f #f #f #f #f #f #f #f)))
+  (set! id (ideque-remove-front (ideque-add-back id 1)))
+  (set! id (ideque-remove-front (ideque-add-back id 1)))
+  (set! id (ideque-remove-front (ideque-add-back id 1)))
+  (test-equal #f (ideque-front (ideque-take-right id 12))))
 
 (define (check name ideque-op list-op n)
   (let* ((lis (iota n))
